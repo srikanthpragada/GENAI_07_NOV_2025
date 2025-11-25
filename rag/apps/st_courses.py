@@ -15,7 +15,7 @@ docs = loader.load()
 
 # Split docs into chunks
 splitter = RecursiveCharacterTextSplitter(
-    chunk_size=400,
+    chunk_size=500,
     chunk_overlap=100)
 
 chunks = splitter.split_documents(docs)
@@ -26,7 +26,7 @@ embeddings_model = GoogleGenerativeAIEmbeddings(
 llm = init_chat_model("gemini-2.5-flash", model_provider="google_genai")
 
 
-folder_path = "./course_vectors"
+folder_path = "./courses_vectors"
 
 if os.path.exists(folder_path):
     db = FAISS.load_local(folder_path, embeddings_model,
