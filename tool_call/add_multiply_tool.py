@@ -16,20 +16,11 @@ def multiply(a: int, b: int) -> int:
     """Multiplies a and b."""
     return a * b
 
-
-def extract_result(message):
-    content = message.content
-    if isinstance(content, str):
-        return content
-    else:
-        if isinstance(content, list):
-            return content[0]["text"]
-
-
 tools = [add, multiply]
 llm_with_tools = llm.bind_tools(tools)
+
 query = "Add 10 and 20 and then multiply it with 40"
-#query = "What is the capital of Spain"
+# query = "What is the capital of Spain"
 
 
 messages = [
@@ -41,24 +32,19 @@ messages = [
 
 while True:
     ai_msg = llm_with_tools.invoke(messages)
-
-    # Terminate loop if no tool is to be called
-    if len(ai_msg.tool_calls) == 0:
-        print("Final Result")
-        print(ai_msg)
-        break
-
     # Add AI message to messages
     messages.append(ai_msg)
 
+    # Terminate loop if no tool is to be called
+    if len(ai_msg.tool_calls) == 0:
+        break
+    
     # call tool selected by LLM
     for tool_call in ai_msg.tool_calls:
         selected_tool = eval(tool_call["name"])
         tool_result = selected_tool.invoke(tool_call)
-        tool_call_id = tool_call["id"]
+        messages.append(tool_result)
 
-        tool_message = ToolMessage(content=tool_result, tool_call_id=tool_call_id)
-        messages.append(tool_message)
 
-    for message in messages:
-        message.pretty_print()
+for message in messages:
+    message.pretty_print()

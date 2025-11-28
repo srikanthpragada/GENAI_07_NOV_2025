@@ -33,30 +33,20 @@ response = model_with_tools.invoke(messages)
 
 messages.append(response)  # Add model response (AIMessage)
 
-# print all messages
-for message in messages:
-    message.pretty_print()
-
-
 # It only tells which tool is to be invoked to get the result. And
 # it does NOT call the tool itself
 
 if len(response.tool_calls) > 0:
     tool = response.tool_calls[0]  # get first tool to call
     chosen_function_name = tool["name"]
-    tool_call_id = tool["id"]
     chosen_function = eval(chosen_function_name)  # convert name to function
     # Call function with required args
-    function_result = chosen_function.invoke(tool)
-    tool_message = ToolMessage(content=function_result, tool_call_id=tool_call_id)
-
-    messages.append(tool_message)  # Add ToolMessage with results
+    tool_result = chosen_function.invoke(tool)
+    messages.append(tool_result)  # Add ToolMessage with results
 
     # Call LLM to get final result
     final_result = model_with_tools.invoke(messages)
     messages.append(final_result)
-else:
-    messages.append(response)
 
 
 # print all messages

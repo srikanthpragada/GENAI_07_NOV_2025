@@ -33,8 +33,8 @@ gemini = init_chat_model(
 
 system_message = SystemMessage(
     "You are a helpful weather assistant.If needed, find out latitude and logitude then provide to tool. ")
-#user_message = HumanMessage("What is the weather in Perth")
-user_message = HumanMessage("What is the capital of Australia")
+user_message = HumanMessage("What is the weather in Perth")
+#user_message = HumanMessage("What is the capital of Australia")
 
 messages = [
     system_message,
@@ -43,25 +43,18 @@ messages = [
 
 gemini_with_tools = gemini.bind_tools([get_coordinates,get_weather])
 
-for step in range(5):
+while True:
     response = gemini_with_tools.invoke(messages)
     messages.append(response)
 
     if len(response.tool_calls) > 0:
         for tool_call in response.tool_calls:
             func_name = tool_call["name"]
-            tool_call_id = tool_call['id']
-            tool = eval(func_name)
+            chosen_function = eval(func_name)
 
             # Call the tool and add result
-            tool_result = tool.invoke(tool_call)
-
-            tool_message = ToolMessage(
-                content = tool_result,
-                tool_call_id = tool_call_id
-            )
-
-            messages.append(tool_message)
+            tool_result = chosen_function.invoke(tool_call)
+            messages.append(tool_result)
     else:
         break 
 
