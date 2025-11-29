@@ -1,3 +1,5 @@
+
+# install pacakge using  pip install langchain-tavily
 # set environment variable - TAVILY_API_KEY 
 
 from langchain.chat_models import init_chat_model
