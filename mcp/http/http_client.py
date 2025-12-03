@@ -4,7 +4,7 @@ import asyncio
 
 # Basic connection
 transport = StreamableHttpTransport(url="http://127.0.0.1:9999/mcp")
-client = Client("http://127.0.0.1:9999/mcp")
+client = Client(transport)
 
 async def call_tool():
     async with client:

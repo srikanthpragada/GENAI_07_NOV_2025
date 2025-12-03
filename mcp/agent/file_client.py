@@ -6,7 +6,7 @@ client = Client('file_server.py')
 
 async def call_tool():
     async with client:
-        result = await client.call_tool("load_file", { "filename" : "test.txt"})
+        result = await client.call_tool("read_file", { "filename" : "test.txt"})
         print(result.content[0].text)
 
 
